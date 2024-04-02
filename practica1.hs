@@ -1,3 +1,4 @@
+--https://campus.exactas.uba.ar/pluginfile.php/518021/mod_resource/content/6/p1_funcional.pdf
 --EJERCICIO 1 
 --max2
 max2::(Float,Float)->Float
@@ -109,8 +110,31 @@ insertarOrdenado :: Ord a => a -> [a] -> [a]
 insertarOrdenado e = recr (\x xs rec -> if e < x then e:x:xs else (if xs==[] then x:e:xs else x:rec)) []
 
 --EJERCICIO 8
+mapPares::(a->b->c)->[(a,b)]->[c]
+mapPares f= map (desCurry f)
 
+--https://www.cubawiki.com.ar/index.php/Pr%C3%A1ctica_1_(Paradigmas)
+armarPares :: [a] -> [b] -> [(a, b)]
+armarPares=foldr  (\a acc bs -> if null bs then [] else (a,head bs):acc (tail bs) ) (const [])
 
+mapDoble::(a->b->c)->[a]->[b]->[c]
+mapDoble f (x:xs) (y:ys)= map (desCurry f) (armarPares (x:xs) (y:ys))
 
+--EJERCICIO 10
 
+generate :: ([a] -> Bool) -> ([a] -> a) -> [a]
+generate stop next = generateFrom stop next []
+generateFrom:: ([a] -> Bool) -> ([a] -> a) -> [a] -> [a]
+generateFrom stop next xs 
+    | stop xs = init xs
+    | otherwise = generateFrom stop next (xs ++ [next xs])
+
+generateBase::([a] -> Bool) -> a -> (a -> a) -> [a]
+generateBase stop cb next = generate stop (\l->next (last l))
+
+factoriales::Int->[Int]
+factoriales i = generate (\l->(length l)==i+1) (\l->if (length l==0) then 1 else (foldl (*) ((last l)+1) l))
+
+iterateN :: Int -> (a -> a) -> a -> [a]
+iterateN n f x = generateBase (\l->(length l)==n) x f
 
