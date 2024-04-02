@@ -148,8 +148,75 @@ foldNat :: Int -> Int -> (Int -> Int -> Int) -> Int
 foldNat cb 1 _ = cb
 foldNat cb n f = f cb (foldNat cb (n-1) f)
 
-potencia::Integer->Integer->Integer
+potencia::Int->Int->Int
 potencia n elevado= foldNat n elevado (\x y->x*y)
 
 --TODO EJERCICIO 13
---EJERCICIO 16 VISTO EN CLASE REVISAR!!!!!!
+
+data AB a = Nil | Hoja a |Bin (AB a) a (AB a)
+
+foldAEB :: b->(a -> b) -> (b -> a -> b -> b) -> AB a -> b
+foldAEB cb cHoja cBin arbol = case arbol of
+    Nil->cb
+    Hoja x->cHoja x
+    Bin i r d -> cBin (rec i) r (rec d)
+  where rec = foldAEB cb cHoja cBin 
+
+
+--No se como hacer RECAEB
+--recAEB :: b->(a -> b) -> (b -> a -> b -> b)-> AB a -> b
+--recAEB cb cHoja cBin arbol = case arbol of
+--    Nil->cb
+--    Bin i r d -> cBin (rec i) r (rec d)
+--    where rec = recAEB cHoja cBin 
+
+esNil::AB a->Bool
+esNil ab = case ab of
+    Nil->True
+    Bin t1 ab t2->False
+
+cantHojas::AB a->Int
+cantHojas ab= foldAEB 0 (\x->1) (\i _ d->i+d+1) ab
+
+altura::AB a->Int
+altura ab= foldAEB 0 (\x->1) (\i _ d->max (i+1) (d+1)) ab
+
+
+-- LE AGREGUE UN CB PARA NIL...NO SE ME OCURRE OTRA FORMA POR AHORA
+--TODO
+mejorSegunAB :: a->(a -> a -> Bool) -> AB a -> a
+mejorSegunAB cb f ab= foldAEB (cb) (\x->x) (\i p d-> if (f i d && f i p) then i else (if(f d i && f d p) then d else p)) ab
+
+--EJERCICIO 16
+
+data RoseTree a = Rose a [RoseTree a]
+
+foldRT :: (a -> [b] -> b) -> RoseTree a -> b
+foldRT f (Rose x hijos) = f x (map (foldRT f) hijos)
+
+tamaño :: RoseTree a -> Int
+tamaño = foldRT (\_ recs -> 1 + sum recs)
+--tamaño (Rose x hijos) = 1 + sum (map tamaño hijos)
+
+alturaRoseTree :: RoseTree a -> Int
+alturaRoseTree = foldRT (\_ recs -> 1 + maximum (0 : recs))
+--maximum es una buena funcion
+--tamaño (Rose x hijos) = 1 + sum (map tamaño hijos)
+
+exampleTree :: RoseTree Char
+exampleTree =
+  Rose 'A'
+    [ Rose 'B' []
+    , Rose 'C' [ Rose 'D' []
+               , Rose 'E' []
+               ]
+    , Rose 'F' [ Rose 'G' []
+               , Rose 'H' [ Rose 'I' []
+                          , Rose 'J' []
+                          ]
+               ]
+    ]
+
+
+--TODO DISTANCIA ROSE TREE 16
+--TODO ES ABB 13
