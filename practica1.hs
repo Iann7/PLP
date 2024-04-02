@@ -138,3 +138,18 @@ factoriales i = generate (\l->(length l)==i+1) (\l->if (length l==0) then 1 else
 iterateN :: Int -> (a -> a) -> a -> [a]
 iterateN n f x = generateBase (\l->(length l)==n) x f
 
+--like that?
+generateFromALT::(a-> Bool) -> (a -> a) -> a -> [a]
+generateFromALT stop next cb= takeWhile stop (iterate next cb)
+
+-- EJERCICIO 11
+-- Creditos al grupo de WPP para foldNat
+foldNat :: Int -> Int -> (Int -> Int -> Int) -> Int
+foldNat cb 1 _ = cb
+foldNat cb n f = f cb (foldNat cb (n-1) f)
+
+potencia::Integer->Integer->Integer
+potencia n elevado= foldNat n elevado (\x y->x*y)
+
+--TODO EJERCICIO 13
+--EJERCICIO 16 VISTO EN CLASE REVISAR!!!!!!
