@@ -1,0 +1,35 @@
+Ejercicio 1 
+10 numberOfDigitsInBase: 2.
+Objeto: 10
+Mensaje: numberOfDigitsInBase
+Colaborador: 2
+
+10 factorial.
+objeto: 10
+factorial: Mensaje
+Colaborador : nil.
+
+20 + 3 * 5. evalua a:115
+Objeto: 20
+Colab: 3,5
+Mensajes : +,*
+
+Ejercicio 2
+
+[:x | x + 1] value: 2
+devuelve 3, la funcion recibe 2 como argumento y le suma 1 
+
+[|x| x := 10. x + 12] value
+No recibe nada, se "registra" la variable adentro de la clausula, se le asigna un valor
+y luego se le suma 12
+-devuelve 22
+
+[:x :y | |z| z := x + y] value: 1 value: 2
+Recibe 2 argumentos y registra otro. asigna a ese tercero el valor de la suma de los dos de entrada
+
+
+[:x :y | x + 1] value: 1
+argument mismatch, falta que le demos otro valor
+
+[:x | [:y | x + 1]] value: 2
+devuelve una clausula
