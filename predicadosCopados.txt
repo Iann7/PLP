@@ -65,6 +65,17 @@ tamArbol(N,bin(I,_,D)) :- tamArbol(NI,I), tamArbol(ND,D), N is 1+NI+ND.
 
 calcularTamanios(AS,TS) :- maplist(tamArbol,TS,AS).
 
+---------------------
+
+PERMUTACIÓN, creditos a honi
+
+%% permutación()
+%% el algoritmo funciona ya que cuando hacemos insertar metemos a X (la cabeza actual de la lista que "queremos" permutar
+%% es insertada en una posición arbitraria de la lista, permitiendonos crear cualquier permutación posible  
+permutacion([], []).
+permutacion([X|Xs], Ys) :- permutacion(Xs, Zs), insertar(X, Zs, Ys).
+insertar(X, L, LX) :- append(P, S, L), append(P, [X|S], LX).
+
 
 
 
