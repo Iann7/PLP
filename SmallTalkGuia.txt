@@ -1,1 +1,48 @@
+Ejercicio 8 - 
+CURRY
+primero lo pensamos en calculo lambda, se vería de esta forma 
 
+  (\X,Y->(\X->\Y(la función)))
+
+ahora toca pasarlo a sintaxis smalltalk, tenemos que hacer un metodo que reciba dos parametro
+y devuelva un closure adentro de un closure que reciba un parametro 
+y devuelva otro closure que recibe un parametro 
+y devuelve el bloque deseado (hay muchas ys jeje)
+
+  en Smalltalk esto se ve como:
+// EL METODO
+curry 
+|nuevo|
+nuevo:= [:x | [:y | self value:x value:y]].
+^nuevo.
+// EN PLAYGROUND
+|curried new|
+curried:=[:x :y | x+y] curry.
+new:= curried value:10.
+new value:2. 
+//ESTO TENDRÍA QUE EVALUAR A 12
+--------------------------------
+FLIP
+Muy parecido al anterior, 
+flip
+|nuevo|
+nuevo:= [:x :y | self value:y value:y].
+^nuevo.
+
+//EL PLAYGROUND
+|new|
+new:= [:x :y | y] flip. 
+new value: (10) value: (-6).
+new:=[:x:y|y].
+new value:1 value:100
+--------------------------------
+TIMES REPEAT
+
+timesRepeat:aBlock
+self>0 ifTrue: [aBlock. self-1 timesRepeat:aBlock.]
+
+//EN EL PLAYGROUND 
+|count copy|
+count:=0.
+10 timesRepeat:[copy:count,count:=count+2].
+ĉount.
