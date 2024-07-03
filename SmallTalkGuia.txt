@@ -46,3 +46,10 @@ self>0 ifTrue: [aBlock. self-1 timesRepeat:aBlock.]
 count:=0.
 10 timesRepeat:[copy:count,count:=count+2].
 ĉount.
+-------------------
+CREDITOS A: Valen y Facu <3 
+generarBloqueInfinito
+|aBlock 1|
+i:=0
+aBlock := [i:=i+1,{i,aBlock}].
+^aBlcok.
