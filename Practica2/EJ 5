@@ -1,0 +1,23 @@
+Demostrar que zip=zip'
+
+P([])=zip' [] = zip []
+
+    *zip' [] = zip []
+    * [] = foldr (\x rec ys->if null ys then [] else (x,head ys):rec (tailys)) 
+    * [] = [] BINGO!
+
+P(xs)=zip' xs = zip xs
+P(x:xs)=zip' x:xs = zip x:xs
+
+QPQ p(xs)=>p(x:xs)
+
+    *zip' x:xs = zip x:xs
+    
+-Creo que hay que analizar dos casos, caso ys==null Y caso YS !=null
+
+    CASO ys=null
+    * []=[] POR z'1 y z1
+
+    CASO ys!=null
+    * foldr (x, head ys):zip' xs (tail ys) (const []) = 
+

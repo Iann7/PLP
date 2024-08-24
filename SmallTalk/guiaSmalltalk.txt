@@ -33,3 +33,13 @@ argument mismatch, falta que le demos otro valor
 
 [:x | [:y | x + 1]] value: 2
 devuelve una clausula
+
+Ejercicio 6
+#collect
+->  "Evaluate aBlock with each of the receiver's elements as the argument.  
+	Collect the resulting values into a collection like the receiver. Answer  
+	the new collection."
+...el resto no me dan ganas de buscarlos
+
+Ejercicio 7
+

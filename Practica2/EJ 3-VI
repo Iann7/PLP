@@ -1,0 +1,29 @@
+VI
+- forall xs::[a]
+- forall x::a
+
+head (reverse (ponerAlFinal x xs)) = x
+
+
+-------
+P([])
+QPQ P([]):
+    *head(reverse(ponerAlFinal x xs)) = x
+    *head(reverse( foldr (:) (x:[]) [])) = x
+    *head(reverse([x])) = x
+    *head([x]) = x
+    *x = x
+-------
+P(ys): head(reverse(foldr (:) (x:[]) ys))=x
+P(y:ys): head(reverse(foldr (:) (x:[]) y:ys))=x
+
+QPQ P(ys)->P(y:ys):
+    *(foldr (:) (x:[]) y:ys) = y:(foldr (:) (x:[]) ys)   --LEMA FOLDR
+    *reverse(y:(foldr (:) (x:[]) ys))= (foldr (:) (x:[]) ys)++[y] --LEMA REVERSE 
+    *head((foldr (:) (x:[]) ys)++[y])--->POR HI?
+
+
+
+
+
+    

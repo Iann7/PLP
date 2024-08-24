@@ -42,18 +42,26 @@ flipRaro::b' -> (a' -> b' -> c') -> (a' -> c')
 flipRaro = flip flip 
 
 --EJERCICIO 2
+-- curry
+curry_v2::((a,b)->c)->a->b->C
+curry_v2 f a b = f (a,b)
 
-altoCurry::((a,b)->c)->a->b->c
-altoCurry f a b = f(a,b)
 
-desCurry::(a->b->c)->(a,b)->c
-desCurry f (a,b) = f a b
+--uncurry 
+uncurry_v2::(a->b->c)->(a,b)->c
+uncurry_v2 f t = f (fst t) (snd t)
 
+-- este no lo entiendo TODO
 curryN::[((a,b)->c)]->[(a->b->c)]
 curryN = map altoCurry
 
 --EJERCICIO 3 
 
+{-
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr f z [] = z
+foldr f z (x:xs) = f x (foldr f z xs)
+-}
 foldSum::(Foldable t,Num a)=> t a->a
 foldSum = foldr (+) 0
 
@@ -86,7 +94,8 @@ sumaAlt = foldr (-) 0
 --EJERCICIO 5
 --LA PRIMER FUNCION NO ES ESTRUCTURAL POR QUE ESTAN USANDO TAIL EN EL LLAMADO RECURSIVO
 --LA SEGUNDA SI LO ES Y LA VAMOS A REESCRIBIR
--- ACC IS USEFUL 4 accumulating a sequence of elements for later traversal or folding. Useful for implementing all kinds of builders on top.
+-- ACC IS USEFUL 4 accumulating a sequence of elements for later traversal or folding. 
+--Useful for implementing all kinds of builders on top.
 -- No es mi codigo :C
 -- me lo guardo por que considero que es util
 -- creditos a MatiWaissman
@@ -143,14 +152,13 @@ generateFromALT::(a-> Bool) -> (a -> a) -> a -> [a]
 generateFromALT stop next cb= takeWhile stop (iterate next cb)
 
 -- EJERCICIO 11
--- Creditos al grupo de WPP para foldNat
-foldNat :: Int -> Int -> (Int -> Int -> Int) -> Int
-foldNat cb 1 _ = cb
-foldNat cb n f = f cb (foldNat cb (n-1) f)
+-- creditos a honi 
+foldNat :: (Integer -> b -> b) -> b -> Integer -> b
+foldNat _ cb 0 = cb
+foldNat f cb n = f n (foldNat f cb (n-1))  
 
-potencia::Int->Int->Int
-potencia n elevado= foldNat n elevado (\x y->x*y)
-
+potencia :: Integer -> Integer -> Integer
+potencia b e= foldNat (\_ rec -> rec * b) 1 e
 --TODO EJERCICIO 13
 
 data AB a = Nil | Hoja a |Bin (AB a) a (AB a)
@@ -162,6 +170,21 @@ foldAEB cb cHoja cBin arbol = case arbol of
     Bin i r d -> cBin (rec i) r (rec d)
   where rec = foldAEB cb cHoja cBin 
 
+--EJERCICIO 15  
+data AIH a = AIHHoja a | AIHBin (AIH a) (AIH a)
+foldAIH ::
+       (a->b)                
+    -> (b-> b-> b)   
+    -> AIH a
+    -> b
+
+foldAIH z f x = case x of
+    AIHHoja a -> z a
+    AIHBin l r -> f (rec l) (rec r)
+    where rec = foldAIH z f
+  
+alturaAIH::AIH a->Integer
+alturaAIH = foldAIH (const 1) (\l r->(max l r)+1)
 
 --No se como hacer RECAEB
 --recAEB :: b->(a -> b) -> (b -> a -> b -> b)-> AB a -> b

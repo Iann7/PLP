@@ -5,7 +5,6 @@ arista(1,2).
 arista(2,3).
 arista(X,Y):-arista(Y,X).
 
-
 %% caminoSimple(+G,+D,+H,?L)
 %% nos dice si L es un camino simple en el grafo G
 %% que empieza en D y termina en H

@@ -1,0 +1,20 @@
+forall xs::[a]
+forall x::a
+
+QPQ length(ponerAlFinal x xs) = 1 + length xs
+
+Caso P([])
+    *length(ponerAlFinal x []) = 1 + length []
+    *length([x]) = 1 +0  --LEMA PONER AL FINAL Y LEMA LENGTH--
+    *1=1 BINGO --LEMA LENGTH--
+---
+Ahora, QPQ P(xs)=>P(y:xs)
+
+-P(xs)=length(ponerAlFinal x xs) = 1 + length xs
+-P(y:xs)=length(ponerAlfinal x y:xs)=1+len y:xs
+
+    *length(ponerAlfinal x y:xs)=1+len y:xs
+    *length(foldr (:) (x:[]) y:xs)=1+1 length xs -Lema ponerAlFinal --Lema Length
+    *length(y:foldr (:) (x:[]) xs)=1+1 length xs -Lema foldr
+    *1+length(foldr (:) (x:[]) xs)=1+1 length xs -lema length
+    *1+1+length xs= 1+1 length xs -- POR HIPOSTESIS INDUCTIVA 
