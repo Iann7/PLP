@@ -113,6 +113,13 @@ sumaAlt_INVERSA = foldl (flip (-)) 0
     NO TENGO NI IDEA DE COMO SE HACE :]
 -}
 
+partes_explicito::[a]->[[a]]
+partes_explicito [] = [[]]
+partes_explicito (x:xs) = (( map (x:) (partes_explicito xs)) ++ partes_explicito xs)
+
+partes::[a]->[[a]]
+partes  = foldr (\x r->(( map (x:) (r)) ++ r)) [[]] 
+
 --EJERCICIO 5
 {-
 elementosEnPosicionesPares :: [a] -> [a]
@@ -130,13 +137,16 @@ entrelazar (x:xs) = \ys -> if null ys
                     else x : head ys : entrelazar xs (tail ys)
 RTA: creo que entrelazar es estructural ya que no accede a XS (lista sobre la cual esta haciendo recursion :])
 -}
-
+--EJERCICIO 6
 recr :: (a -> [a] -> b -> b) -> b -> [a] -> b
 recr _ z [] = z
 recr f z (x : xs) = f x xs (recr f z xs)
 
 sacarUna::Eq a=>a->[a]->[a]
 sacarUna e = recr (\a xs b-> if a==e then xs else e:xs) []
+
+insertarOrdenado::Ord a => a->[a]->[a]
+insertarOrdenado e=recr (\x xs rec->if e<x then e:x:xs else (if xs==[] then x:e:xs else x:rec)) []
 
 {-El esquema de recursión foldr no es adecuado para esta función ya que necesitamos acceder a la cola
  en el caso de que el elemento actual sea el que queramos eliminar-}
@@ -146,9 +156,22 @@ si xs==[] termina la recursion
 si nada de esto es verdadero x queda en su posicion y se sigue la recursion "mas adentro"
 NO ENTIENDO QUE ES REC ACA TODO
 -}
-insertarOrdenado::Ord a => a->[a]->[a]
-insertarOrdenado e=recr (\x xs rec->if e<x then e:x:xs else (if xs==[] then x:e:xs else x:rec)) []
 
+
+
+{-Ejercicio 7-}
+{-genLista::a->(a->a)->Integer->[a]
+genLista e_inicial _ 0 =[e_inicial]
+genLista e_inicial f cantidad_lista = (f (head recursion)):recursion
+    where recursion= genLista e_inicial f (cantidad_lista-1)
+-}
+
+genLista::a->(a->a)->Integer->[a]
+genLista e_inicial _ 0 =[e_inicial]
+genLista e_inicial f cantidad_lista = (f (head recursion)):recursion
+    where recursion= genLista e_inicial f (cantidad_lista-1)
+
+{-Ejercicio 8-}
 mapPares::(a->b->c)->[(a,b)]->[c]
 mapPares f = map (uncurry_v2 f)
 
@@ -157,3 +180,28 @@ armarPares = foldr (\a xs ys-> if null ys then [] else (a,head ys):(xs (tail ys)
 
 mapDoble::(a->b->c)->[a]->[b]->[c]
 mapDoble f (x:xs) (y:ys)= map (uncurry f) (armarPares (x:xs) (y:ys))
+
+{-Ejercicio 10-}
+
+foldNat::Integer->b->(Integer->b->b)->b
+foldNat 0 cb _ =cb
+foldNat e cb f = f e (foldNat (e-1) cb f)
+
+potencia::Integer->Integer->Integer
+potencia exponente base  = foldNat exponente 1 (\x r->base*r)
+
+
+{-Ejercicio 11-}
+
+data Polinomio a = X|Cte a | Suma (Polinomio a) (Polinomio a) | Prod (Polinomio a) (Polinomio a)
+
+foldPoli::b->(a->b)(b->b->b)->(b->b->b)->Polinomio a->b 
+foldPoli cX cA cSuma cProd x = case x of
+    x->cX
+    Cte a-> cA a
+    Suma i d -> cSuma (rec i) (rec d) 
+    Prod i d -> cProd (rec i) (rec d) 
+    where rec = foldPoli cX cA cSuma cProd
+
+evaluar::Num a=>a->Polinomio a->a
+evaluar a = foldPoli a (id) (+) (*)
