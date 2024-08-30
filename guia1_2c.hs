@@ -167,9 +167,7 @@ genLista e_inicial f cantidad_lista = (f (head recursion)):recursion
 -}
 
 genLista::a->(a->a)->Integer->[a]
-genLista e_inicial _ 0 =[e_inicial]
-genLista e_inicial f cantidad_lista = (f (head recursion)):recursion
-    where recursion= genLista e_inicial f (cantidad_lista-1)
+genLista e_inicial f cantidad_lista = foldNat cantidad_lista [e_inicial] (\cantidad_actual r->f(head r):r)
 
 {-Ejercicio 8-}
 mapPares::(a->b->c)->[(a,b)]->[c]
@@ -195,7 +193,7 @@ potencia exponente base  = foldNat exponente 1 (\x r->base*r)
 
 data Polinomio a = X|Cte a | Suma (Polinomio a) (Polinomio a) | Prod (Polinomio a) (Polinomio a)
 
-foldPoli::b->(a->b)(b->b->b)->(b->b->b)->Polinomio a->b 
+{-foldPoli::b->(a->b)(a->b->b)->(b->b->b)->Polinomio a->b 
 foldPoli cX cA cSuma cProd x = case x of
     x->cX
     Cte a-> cA a
@@ -204,4 +202,4 @@ foldPoli cX cA cSuma cProd x = case x of
     where rec = foldPoli cX cA cSuma cProd
 
 evaluar::Num a=>a->Polinomio a->a
-evaluar a = foldPoli a (id) (+) (*)
+evaluar a = foldPoli a (id) (+) (*)-}
