@@ -117,6 +117,63 @@ Como hacemos para demostrar igualdades?
     HI P(xs)
     TI P(x:xs)
 
+    Ejemplo: principio de induccion sobre arboles binarios
+    data AB a = NIl | Bin (AB a) a (AB a)
+    Si P(Nil)
+    y para todo arbol i,d del tipo AB a y para toda raiz r del tipo a 
+    HI P(i) ^ P(d)
+    TI Bin i r d
+    HI=>TI
+    Ejemplo: principio de induccion sobre polinomios 
+    data Poli a = X | Cte a | Suma (Poli a) (Poli a) | Prod (Poli a) (Poli a)
     
+    Si P(X) y para todo k del tipo a P(Cte k)
+    y para todo i,d del tipo Poli A entonces P(i) ^ P(D) => P(suma i d)
+    y para todo i,d del tipo Poli A entonces P(i) ^ P(D) => P(prod i d)
+    entonces todo q del tipo Poli a entonces vale P(q)
+
+    CB X Cte a 
+    HI P(i) ^ P(d)
+    TI Prod i d , Suma i d
+    
+
+    Ejemplo:induccion sobre listas
+
+    map f [] = []   {M0}
+    map f (x:xs) = f x:map f xs {M1}
+    
+    [] ++ ys =ys    {A0}
+    (x:xs) ++ ys = x:(xs++ys)   {A1}
+
+    propiedad si F a->b xs::[a] ys::[a] entonces
+    map f (xs ++ ys) = map f xs ++ map f ys -----------> esto es P
+    ¿Como hacemos esto?
+    hacemos induccion estructural sobre xs 
+    CB P([])
+    HI P(XS)
+    TI  P(x:xs)
+    para todo x del tipo a, para todo xs del tipo [a] (P(xs)=>P(x:xs))
+
+    RESOLUCIÓN
+    CB 
+    map f ([]++ys)=map f [] ++ map f ys
+    map f []=[] x M0
+    map f ([]++ys)= map f (ys) xA0
+    -----------
+    map f ys = map f ys
+    son iguales!
+
+    PASO INDUCTIVO
+    para todo xs del tipo [a] para todo x del tipo a. P(xs)=>P(x:xs)
+
+    map f (x:xs ++ys) = map f x:xs ++ map ys
+    
+    map f (x:xs ++ys)
+    = map f (x:(xs++ys)) xA1
+    = f x : map f (xs++ys) xM1
+    = f x:(map f xs ++ map f ys) x HI
+    = map f(x:xs) ++ map f ys xM1
+    
+    luego, probamos que los dos terminos son iguales 
 
 -}
