@@ -210,29 +210,33 @@ evaluar a = foldPoli a (id) (+) (*)
 data AB a = Nil | Bin (AB a) a (AB a)
 foldAB::b->(b->a->b->b)->AB a->b
 foldAB  cb f x = case x of 
-    Nil -> cb
-    Bin i r d -> f (rec i) r (rec d)
-    where rec = foldAB cb f 
+        Nil -> cb
+        Bin i r d -> f (rec i) r (rec d)
+        where rec = foldAB cb f 
 
-recAB::b->(b->a->b->a->a->b) -> Polinomio a->b
+recAB::b->(b->a->b->AB a->AB a->b) -> AB a->b
 recAB cb f x = case x of
     Nil -> cb
-    Bin i r d -> f (rec i) r (rec d) i d 
+    Bin i r d -> f (rec i) r (rec d) (i) (d) 
     where rec = recAB cb f 
 
-esNil::AB a->Bool
-esNil ab = case ab of
-    Nil->True
-    Bin t1 ab t2->False
-
-cantHojas::AB a->Int
-cantHojas ab= foldAEB 0 (\x->1) (\i _ d->i+d+1) ab
-
-altura::AB a->Int
-altura ab= foldAEB 0 (\x->1) (\i _ d->max (i+1) (d+1)) ab
-
-mejorSegunAB :: a->(a -> a -> Bool) -> AB a -> a
-mejorSegunAB cb f ab= foldAEB (cb) (\x->x) (\i p d-> if (f i d && f i p) then i else (if(f d i && f d p) then d else p)) ab
-
 {-DUDA EJERCICIO 14-}
+mismaEstructura :: AB a -> AB b -> Bool
+mismaEstructura  = foldAB (\y->case y of 
+                                 Nil->True
+                                 Bin i r d->False)
+                            
+                           (\ri r rd y->case y of 
+                                        Nil->False
+                                        Bin yi _ yd -> (ri yi) && (rd yd)) 
+
+
+
+
+
+cantHojas::AB a -> Int 
+cantHojas = foldAB 0 (\ri v rd -> if (ri==0 && rd==0) then 1 else ri+rd)
+
+espejo::AB a-> AB a
+espejo = foldAB Nil (\ri v rd -> Bin rd v ri)
 {-empezar guia 2-}
