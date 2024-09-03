@@ -173,7 +173,135 @@ Como hacemos para demostrar igualdades?
     = f x : map f (xs++ys) xM1
     = f x:(map f xs ++ map f ys) x HI
     = map f(x:xs) ++ map f ys xM1
-    
+
     luego, probamos que los dos terminos son iguales 
 
+    EJEMPLO
+    Propiedad: si f::a->b->b z::b xs::[a]
+    foldr f z xs = foldl (flip f) z (reverse xs) => P(xs)
+    
+    por induccion en la estructura de XS. el CB es facil 
+    el caso inductivo es para todo x del tipo a para todo xs del tipo a HI=>TI
+    foldr f z (x:xs)
+    = f x (foldr f z xs) x def Foldr            {DEF FOLDR}
+    = f x (foldl (flip f) z  (reverse xs))      {HI}
+    = flip f (foldl (flip f) z (reverse xs)) x  {DEF FLIP}
+    = foldl (flip f) z (reverse xs ++ [x])      (???) FALTA PROBAR EL LEMA
+    = foldl (flip f) z (reverse (x:xs))
+
+    LEMA si g::b->a->b z::b x::a xs::[a]
+    dem: por INDUCCION en xd 
+        
+        CB 
+        foldl g z ([]++[x]) = g (foldl g z []) x
+        = foldl g z [xs]            por def 
+        = foldl g (g z x) []        por def foldl
+        = g z x                     por def foldl
+        = g (foldl g z []) x        por def foldl
+
+        PASO INDUCTIVO
+        sup que foldl g z (ys++[x])= g (foldl g z ys) x
+        Luego:
+                foldl g z (y:ys)++[x])
+                = foldl q z (y:ys++[x])         por def ++
+                = foldl g (g z y) (ys++[x])     por def foldl
+                            |   
+                            V   
+                            Z'               
+                = g (foldl g (g z y) ys ) x     por HI
+                = g (foldl g z (y:ys)) x        por def foldl
+
+                qvq = g(foldl g z (y:ys)) x
+        REVISION: P(xs): agregamos (para todo z del tipo b)
+
+
+EXTENSIONALIDAD
+
+Usando el principio de induccion estructural se puede probar
+
+Extensionalidad para para pares
+Si p::(a,b) entonces existe un x del tipo a x del tipo b tal que p=(x,y)
+
+Extensionalidad para sumas
+si e::Either a b entonces
+o bien existe un x del tipo a tal que e= Left x
+o bien existe un y del tipo b tal que e=Right y 
+
+Puntos de vista intencional vs extensional? 
+¿vale la equivalencia de expresiones?
+    quicksort=insertionSort
+punto de vista intencional dice que dos valores son iguales si estan definidos de la misma manera 
+punto de vista extensional dice que dos valores son iguales cuando no los puedo distinguir al observarlos 
+    propiedad inmediata: para todo valor de entrada de la funcion, si se cumple que f=g las podemos intercambiar
+                        (f x = g x para todo x del tipo a )
+    principio de extensionalidad funcional
+        si para todo x del tipo a f x = g x entonces f = g
+    EJEMPLO
+    vamos que swap.swap = id :: (a,b)->(a,b)
+    por extensionalidad funcional basta ver que:
+    para todo p del tipo (a,b). (swap.swap) p = id p
+    por induccion sobre pares basta ver que:
+    para todo x del tipo a para todo y del tipo b. (swap.swap) (x,y) = id (x,y)
+    luego aplicamos las definiciones y llegamos a demostrar la igualdad (ejercicio para el lector <3)
+
+
+Razonamos ecuacionalmente usando tres principios
+    PRINCIPIO DE REEMPLAZO 
+    PRINCIPIO DE INDUCCION ESTRUCTURAL 
+    PRINCIPIO DE EXTENSIONALIDAD FUNCIONAL 
+
+supongamos que logramos demostrar que e1=e1
+¿que nos asegura eso sobre e1 y e2?
+podemos intercambiar las dos expresiones entre si
+cualquier observacion que haga sobre e1 tendra que dar lo mismo sobre e2
+CUIDADO: la igualdad extensional de funciones es mas grues que la igualdad intensional. Por ej 
+         se puede demostrar:
+
+         quickSort=insertionSort::[int]->[int]
+         pero son algoritmos distintos 
+
+¿como demostramos que NO vale una igualdad e1=e2::A?
+cuando encontramos a un observador donde las dos funciones no sean iguales 
+EJEMPLO
+demostrar que NO vale la igualdad
+id=swap ::(Int,Int)->(Int,Int)
+la idea es llegar a un booleano para hacer la comparación 
+
+
+ISOMORFIMOS DE TIPOS 
+¿Que relacion tienen los siguientes valores?
+("hola",(1,True))::(String,(Int,Bool))
+((True,"Hola"),1)::((Bool,String),Int)
+"Hay como una inyeccion entre estos dos datos"
+representan la misma informacion pero escrita de distinta MANERA
+
+podemos transformar los valores de un tipo en valores del otro!:D
+
+podemos decir que dos tipo sde a y b son ISOMORFOS si 
+1 hay una funcion F::A->B total
+2 hay una funcion g::B->A total
+3 se puede demostrar que g.f=id :: A->A
+4 se puede demostrar que f.g=id :: B->B
+
+Ejemplo 
+veamos que ((a,b)->c) ~ (a->b->c)
+
+QVQ
+uncurry.curry = id
+por extensionalidad funcional QVQ
+para todo f::((a,b)->c). (uncurry.curry) f = id f ::(a,b)->c 
+sea f::(a,b)->c y veamos que 
+(uncurry.curry) f = id f ::(a,b)->c
+(uncurry.curry) f = uncurry (curry f)       por DEF (.)
+HACER LA EXTENSIONALIDAD OTRA VEZ   
+por ext funcional, basta ver que
+    para todo p del tipo (a,b). (uncurry.curry) f p = id f p
+sea p::(a,b) veamos:
+                    (uncurry.curry) f p = id f p::C
+por induccion en p, basta ver que:
+    forall x::A forall y:b  (uncurry.curry) f (x,y) = id f (x,y) ::C
+
+sean x::a y::b luego 
+    (uncurry.curry) f (x,y) = uncurry (curry f) (x,y)   PORDEF (.)
+=   
 -}

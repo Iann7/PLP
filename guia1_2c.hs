@@ -179,7 +179,7 @@ armarPares = foldr (\a xs ys-> if null ys then [] else (a,head ys):(xs (tail ys)
 mapDoble::(a->b->c)->[a]->[b]->[c]
 mapDoble f (x:xs) (y:ys)= map (uncurry f) (armarPares (x:xs) (y:ys))
 
-{-Ejercicio 10-}
+{-Ejercicio 11-}
 
 foldNat::Integer->b->(Integer->b->b)->b
 foldNat 0 cb _ =cb
@@ -189,11 +189,11 @@ potencia::Integer->Integer->Integer
 potencia exponente base  = foldNat exponente 1 (\x r->base*r)
 
 
-{-Ejercicio 11-}
+{-Ejercicio 12-}
 
 data Polinomio a = X|Cte a | Suma (Polinomio a) (Polinomio a) | Prod (Polinomio a) (Polinomio a)
 
-{-foldPoli::b->(a->b)(a->b->b)->(b->b->b)->Polinomio a->b 
+foldPoli::b->(a->b)->(b->b->b)->(b->b->b)->Polinomio a->b 
 foldPoli cX cA cSuma cProd x = case x of
     x->cX
     Cte a-> cA a
@@ -201,5 +201,38 @@ foldPoli cX cA cSuma cProd x = case x of
     Prod i d -> cProd (rec i) (rec d) 
     where rec = foldPoli cX cA cSuma cProd
 
+
+{-DUDA EJEMPLO DE EVALUAR QUE NO LO ENTIENDO-}
 evaluar::Num a=>a->Polinomio a->a
-evaluar a = foldPoli a (id) (+) (*)-}
+evaluar a = foldPoli a (id) (+) (*)
+
+{-EJERCICIO 12 -}
+data AB a = Nil | Bin (AB a) a (AB a)
+foldAB::b->(b->a->b->b)->AB a->b
+foldAB  cb f x = case x of 
+    Nil -> cb
+    Bin i r d -> f (rec i) r (rec d)
+    where rec = foldAB cb f 
+
+recAB::b->(b->a->b->a->a->b) -> Polinomio a->b
+recAB cb f x = case x of
+    Nil -> cb
+    Bin i r d -> f (rec i) r (rec d) i d 
+    where rec = recAB cb f 
+
+esNil::AB a->Bool
+esNil ab = case ab of
+    Nil->True
+    Bin t1 ab t2->False
+
+cantHojas::AB a->Int
+cantHojas ab= foldAEB 0 (\x->1) (\i _ d->i+d+1) ab
+
+altura::AB a->Int
+altura ab= foldAEB 0 (\x->1) (\i _ d->max (i+1) (d+1)) ab
+
+mejorSegunAB :: a->(a -> a -> Bool) -> AB a -> a
+mejorSegunAB cb f ab= foldAEB (cb) (\x->x) (\i p d-> if (f i d && f i p) then i else (if(f d i && f d p) then d else p)) ab
+
+{-DUDA EJERCICIO 14-}
+{-empezar guia 2-}
