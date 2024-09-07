@@ -212,7 +212,7 @@ mejorSegunAB cb f ab= foldAEB (cb) (\x->x) (\i p d-> if (f i d && f i p) then i 
 
 --EJERCICIO 16
 
-data RoseTree a = Rose a [RoseTree a]
+data RoseTree a = Leaf a | Rose a [RoseTree a]
 
 foldRT :: (a -> [b] -> b) -> RoseTree a -> b
 foldRT f (Rose x hijos) = f x (map (foldRT f) hijos)

@@ -154,7 +154,8 @@ insertarOrdenado e=recr (\x xs rec->if e<x then e:x:xs else (if xs==[] then x:e:
 si e<x termina la recursion
 si xs==[] termina la recursion
 si nada de esto es verdadero x queda en su posicion y se sigue la recursion "mas adentro"
-NO ENTIENDO QUE ES REC ACA TODO
+rec es una keyword de haskell que se usa para devolver algo de la recursion
+en general se puede usar otra palabra, pero es buena practica usar rec
 -}
 
 
@@ -220,7 +221,8 @@ recAB cb f x = case x of
     Bin i r d -> f (rec i) r (rec d) (i) (d) 
     where rec = recAB cb f 
 
-{-DUDA EJERCICIO 14-}
+
+{-EJERCICIO 13-}
 mismaEstructura :: AB a -> AB b -> Bool
 mismaEstructura  = foldAB (\y->case y of 
                                  Nil->True
@@ -231,12 +233,58 @@ mismaEstructura  = foldAB (\y->case y of
                                         Bin yi _ yd -> (ri yi) && (rd yd)) 
 
 
-
-
+ramas::AB a->[[a]]
+ramas = foldAB [] f
+    where f ri v rd 
+                | null ri && null rd = [[v]]
+                | null ri = map (v:) rd 
+                | null rd = map (v:) ri
+                | otherwise = map (v:) (ri++rd)
 
 cantHojas::AB a -> Int 
 cantHojas = foldAB 0 (\ri v rd -> if (ri==0 && rd==0) then 1 else ri+rd)
 
 espejo::AB a-> AB a
 espejo = foldAB Nil (\ri v rd -> Bin rd v ri)
+{-EJERCICIO 14-}
+
+
+data AIH a = HojaAIH a | BinAIH (AIH a) (AIH a)
+foldAIH:: (a->b)->(b->b->b)->AIH a->b
+foldAIH cHoja cBin x = case x of
+    HojaAIH a -> cHoja a
+    BinAIH i d -> cBin (rec i) (rec d)
+    where rec = foldAIH cHoja cBin 
+
+altura::AIH a->Integer 
+altura = foldAIH (const 1) (\i d->1+(max i d))
+
+tamañoAIH::AIH a->Integer
+tamañoAIH = foldAIH (const 1) (\i d->1+i+d)
+
+{-EJERCICIO 15-}
+data RoseTree a = Rose a [RoseTree a]
+
+foldRT :: (a -> [b] -> b) -> RoseTree a -> b
+foldRT f (Rose x hijos) = f x (map (foldRT f) hijos)
+
+tamañoRT :: RoseTree a -> Int
+tamañoRT = foldRT (\_ recs -> 1 + sum recs)
+
+alturaRoseTree :: RoseTree a -> Int
+alturaRoseTree = foldRT (\_ recs -> 1 + maximum (0 : recs))
+
+exampleTree :: RoseTree Char
+exampleTree =
+  Rose 'A'
+    [ Rose 'B' []
+    , Rose 'C' [ Rose 'D' []
+               , Rose 'E' []
+               ]
+    , Rose 'F' [ Rose 'G' []
+               , Rose 'H' [ Rose 'I' []
+                          , Rose 'J' []
+                          ]
+               ]
+    ]
 {-empezar guia 2-}
