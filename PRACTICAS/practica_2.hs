@@ -218,5 +218,8 @@
       TODO PROBAR LEMA 
   
 
+  ARBOL23 ab p(q)
+  caso q = Hoja x
+  caso q = Dos raiz primero segundo | HI = P(primero) &&  P(segundo)
   
 -}        

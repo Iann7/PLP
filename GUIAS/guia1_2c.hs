@@ -115,7 +115,7 @@ sumaAlt_INVERSA = foldl (flip (-)) 0
 
 partes_explicito::[a]->[[a]]
 partes_explicito [] = [[]]
-partes_explicito (x:xs) = (( map (x:) (partes_explicito xs)) ++ partes_explicito xs)
+partes_explicito (x:xs) = ((     (partes_explicito xs)) ++ partes_explicito xs)
 
 partes::[a]->[[a]]
 partes  = foldr (\x r->(( map (x:) (r)) ++ r)) [[]] 
