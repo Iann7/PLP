@@ -284,8 +284,6 @@ Considerar las siguientes funciones:
                         por lo visto en clase vale por la propiedad 
                         foldr f z xs = foldl (flip f) z (reverse xs)
 
-DUDA EJ 3 TODO
-
 EJ 5 
 Dadas las siguientes funciones:
     zip :: [a] -> [b] -> [(a,b)]
@@ -308,6 +306,98 @@ Dadas las siguientes funciones:
 
     CB XS=[]
         zip [] ys = zip' [] ys 
--}                      
+        {LI}
+            zip [] ys 
+            foldr (\x rec ys ->if null ysthen [] else (x, head ys) : rec (tail ys)) (const []) [] {ZIP}
+            []                                                                                    {FOLDR_0}
+        {LD}
+            zip' [] ys
+            []      {z'0}
+        QED
+
+    PASO INDUCTIVO
+    QVQ zip x:xs ys = zip' x:xs ys 
+    HI  zip' xs ys = zip' xs ys
+    {LADO IZQUIERDO}
+        zip x:xs ys
+        foldr (\x rec ys ->if null ys then [] else (x, head ys) : rec (tail ys)) (const []) (x:xs) {ZIP}
+        (\x rec ys ->if null ys then [] else (x, head ys) : rec (tail ys))  (x:xs)                 {foldr_1}
+        if null ys then [] else (x,head ys):rec (tail ys)
+    {LADO DERECHO}
+        zip' x:xs ys 
+        if null ys then [] else (x, head ys):zip' xs (tail ys) {z'1}
+    
+    CASO NULL YS =TRUE
+        {LI}
+        []
+        {LD}
+        []
+        QED
+    CASO NULL YS =FALSE
+        {LI}
+            (x,head ys):rec (tail ys)
+        {LD}
+            (x,head ys):zip' xs (tail ts)
+        por HI podemos cambiar rec rail ys 
+        por zip' xs (tail ts )
+        luego queda demostrado 
+
+EJ 6
+
+
+Ejercicio 9 
+Dadas las funciones altura y cantNodos definidas en la práctica 1 para árboles binarios, demostrar la
+siguiente propiedad:
+∀ x::AB a . altura x ≤ cantNodos x
+data AB a = Nil | Bin (AB a) a (AB a)
+
+    altura::AB a->Integer 
+    altura = foldAB 0 (\i _ d->1+(max i d))   {ALTURA}
+
+    cantNodos::AB a -> Int 
+    CantNodos = foldAB 0 (\ri _ rd -> 1+ri+rd) {CANTNODOS}
+
+    para probar que la desigualdad vale necesitamos probar que vale para todos 
+    los x
+
+    como x es un tipo con un constructor recursivo y un constructor base, 
+    voy a aplicar induccion estructural sobre x 
+
+    CASO BASE x=Nil 
+        altura Nil ≤ cantNodos Nil
+        {LI}
+            altura Nil
+            foldAB 0 (\i d->1+(max i d))  Nil {ALTURA}
+            0                                 {cNil}
+        {LD}
+            cantNodos Nil
+            foldAB 0 (\ri v rd -> 1+ri+rd)    {CANTNODOS}
+            0                                 {cNil}
+
+        luego, el caso base queda demostrado
+
+    PASO INDUCTIVO
+    QVQ altura Bin i r d  ≤ cantNodos Bin i r d 
+    HI P(i) && P(d)
+    {LI}
+         altura Bin i r d 
+         foldAB 0 (\i _ d->1+(max i d)) (Bin i r d)   {ALTURA}
+         (\i _ d->1+(max i d)) (rec i) r  (rec d)     {foldAB_1}
+            where rec =foldAB 0 (\i _ d->1+(max i d))
+         1+(max (rec i) (rec d))                      {APP}
+
+
+    {LD}
+        cantNodos Bin i r d 
+        foldAB 0 (\ri _ rd -> 1+ri+rd) (Bin i r d)  {CANTNODOS}
+        (\ri _ rd -> 1+ri+rd) (rec i) r (rec d)     {foldAB_1}
+            where rec = foldAB 0 (\ri _ rd -> 1+ri+rd)
+        1+(rec i)+(rec d)                           {APP}
+
+    nos queda que 
+    1+(max (rec i) (rec d))<=1+(rec i)+(rec d)   
+    por propiedades de int nos queda siempre estrictamente menor
+    luego queda demostrado 
+-}                  
 
 
