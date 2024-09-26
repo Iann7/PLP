@@ -343,6 +343,80 @@ Dadas las siguientes funciones:
         luego queda demostrado 
 
 EJ 6
+nub :: Eq a => [a] -> [a]
+{N0} nub [] = []
+{N1} nub (x:xs) = x : filter (\y -> x /= y) (nub xs)
+
+union :: Eq a => [a] -> [a] -> [a]
+{U0} union xs ys = nub (xs++ys)
+
+intersect :: Eq a => [a] -> [a] -> [a]
+{I0} intersect xs ys = filter (\e -> elem e ys) xs
+
+Indicar si las siguientes propiedades son verdaderas o falsas. Si son verdaderas, realizar una demostración. Si
+son falsas, presentar un contraejemplo.
+
+i. Eq a => ∀ xs::[a] . ∀ e::a . ∀ p::a -> Bool . elem e xs && p e = elem e (filter p xs)
+como queremos que probar que vale para todo xs vamos a hacer induccion sobre listas sobre el 
+necesitamos probar el caso base xs=[] y el caso inductivo x:xs
+CB
+elem e [] && p e = elem e (filter p [])
+false && p e = elem e []
+false =false 
+qed 
+PASO INDUCTIVO 
+QVQ elem e x:xs && p e = elem e (filter p x:xs)
+HI  elem e xs && p e = elem e (filter p xs)
+{LI}
+    (if e==x then true else elem e xs) && p e
+{LD}
+    elem e (filter p x:xs)
+    elem e (if px then x:xs else xs)
+    por ext de bool
+    px=true
+        elem e x:filter p xs
+        if e==x then true else else filter p xs 
+        por ext de bool
+            caso e==x
+                true
+            caso e!=x
+                vale por HI 
+                
+    es muy parecido para el lado izquierdo 
+    QED 
+ii. Eq a => ∀ xs::[a] . ∀ e::a . elem e xs = elem e (nub xs)
+
+iii. Eq a => ∀ xs::[a] . ∀ ys::[a] . ∀ e::a . elem e (union xs ys) = (elem e xs) || (elem e ys)
+
+iv. Eq a => ∀ xs::[a] . ∀ ys::[a] . ∀ e::a . elem e (intersect xs ys) = (elem e xs) && (elem e ys)
+    vamos a hacer ind estructural bajo xs 
+    cb 
+    elem e (intersect [] ys) = elem e [] && elem e ys
+    false = false && elem e ys
+    false = false
+    paso inductivo 
+    QVQ elem e (intersect x:xs ys) = (elem e x:xs) && (elem e ys)
+    HI elem e (intersect x:xs ys) = (elem e x:xs) && (elem e ys)
+    {LI}
+        elem e (filter (\e -> elem e ys) x:xs)
+        elem e (if elem x ys then x:filter (...) xs else filter(...) xs)
+        ext de booleanos 
+        caso elem x ys =true 
+            elem e x:filter(...) xs
+                e==x=true 
+                    vale trivialmente 
+                e==x=false
+                    vale por HI 
+        caso elem x ys =false
+            elem e filter (...) xs 
+            vale x HI 
+        lo mismo para el lado derecho 
+v. Eq a => ∀ xs::[a] . ∀ ys::[a] . length (union xs ys) = length xs + length ys
+
+vi. Eq a => ∀ xs::[a] . ∀ ys::[a] . length (union xs ys) ≤ length xs + length ys
+
+
+
 
 
 Ejercicio 9 
@@ -398,6 +472,33 @@ data AB a = Nil | Bin (AB a) a (AB a)
     1+(max (rec i) (rec d))<=1+(rec i)+(rec d)   
     por propiedades de int nos queda siempre estrictamente menor
     luego queda demostrado 
+
+Ejercicio 12 F
+Dados el tipo Polinomio definido en la práctica 1 y las siguientes funciones:
+derivado :: Num a => Polinomio a -> Polinomio a
+derivado poli = case poli of
+X -> Cte 1
+Cte _ -> Cte 0
+Suma p q -> Suma (derivado p) (derivado q)
+Prod p q -> Suma (Prod (derivado p) q) (Prod (derivado q) p)
+sinConstantesNegativas :: Num a => Polinomio a -> Polinomio a
+sinConstantesNegativas = foldPoli True (>=0) (&&) (&&)
+esRaiz :: Num a => a -> Polinomio a -> Bool
+esRaiz n p = evaluar n p == 0
+Demostrar las siguientes propiedades:
+i. Num a => ∀ p::Polinomio a . ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
+ii. Num a => ∀ p::Polinomio a . ∀ k::a . ∀ e::a .
+evaluar e (derivado (Prod (Cte k) p)) = evaluar e (Prod (Cte k) (derivado p))
+iii. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p⇒sinConstantesNegativas (derivado p))
+La recursión utilizada en la denición de la función derivado ¾es estructural, primitiva o ninguna de las dos?
+    
+    
+    
+    
+    
+    
+    
+    
 -}                  
 
 
