@@ -341,6 +341,9 @@ Dadas las siguientes funciones:
         por HI podemos cambiar rec rail ys 
         por zip' xs (tail ts )
         luego queda demostrado 
+    
+    OTRA FORMA DE HACERLO ES APLICAR HI DIRECTAMENTE EN VEZ DE DIVIDIR EN CASO
+    
 
 EJ 6
 nub :: Eq a => [a] -> [a]
